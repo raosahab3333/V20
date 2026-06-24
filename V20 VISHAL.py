@@ -336,7 +336,7 @@ def save_html(signals_list: list, filename: str) -> None:
     header {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
       margin-bottom: 32px;
       position: relative;
     }
@@ -366,6 +366,21 @@ def save_html(signals_list: list, filename: str) -> None:
       font-size: 14px;
       color: var(--text-secondary);
       font-weight: 400;
+    }
+
+    .last-updated {
+      font-size: 13px;
+      color: var(--accent-color);
+      font-weight: 600;
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-glow);
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      align-self: flex-start;
     }
 
     .theme-toggle-btn {
@@ -898,7 +913,8 @@ def save_html(signals_list: list, filename: str) -> None:
     <header>
       <div class="title-area">
         <h1>V20 Scanner by Vishal Yadav</h1>
-        <div class="subtitle">Automated scanner identifying retracements near major support points. Refreshes daily at 9 AM IST.</div>
+        <div class="subtitle">Automated scanner identifying retracements near major support points. Refreshes hourly.</div>
+        <div class="last-updated"><i class="far fa-clock"></i> Last Updated: <span>__LATEST_DATE__</span></div>
       </div>
       <div class="header-top">
         <button id="themeToggle" class="theme-toggle-btn" title="Toggle Light/Dark Theme">
@@ -994,7 +1010,7 @@ def save_html(signals_list: list, filename: str) -> None:
     </div>
 
     <div style="text-align: center; margin-top: 40px; font-size: 12px; color: var(--text-secondary);">
-      Scan completed on <span id="scanTimestamp">__LATEST_DATE__</span>. For educational purposes only.
+      For educational purposes only.
     </div>
   </div>
 
