@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-V20 Signal Scanner – Mobile Friendly HTML Dashboard
+V20 Signal Scanner – Mobile Friendly HTML Dashboard with Password Lock
 """
 
 import yfinance as yf
@@ -193,7 +193,7 @@ def save_html(signals_list: list, filename: str) -> None:
       background: var(--bg-gradient);
       color: var(--text-primary);
       min-height: 100vh;
-      padding: 24px 16px;
+      padding: 0;
       transition: background 0.3s ease, color 0.3s ease;
       line-height: 1.5;
     }
@@ -201,6 +201,136 @@ def save_html(signals_list: list, filename: str) -> None:
     .container {
       max-width: 1200px;
       margin: 0 auto;
+      padding: 24px 16px;
+    }
+
+    /* Password Overlay Styles */
+    .password-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0b0f19 0%, #111827 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+
+    [data-theme="light"] .password-overlay {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+
+    .password-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 24px;
+      padding: 40px 30px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .password-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--accent-glow);
+      color: var(--accent-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      margin-bottom: 8px;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .password-card h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .password-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .password-input-wrapper {
+      position: relative;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .password-input-wrapper input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 14px;
+      padding: 14px 56px 14px 16px;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .password-input-wrapper input:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .password-input-wrapper button {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: var(--accent-color);
+      border: none;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .password-input-wrapper button:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .password-error-msg {
+      color: var(--danger);
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .password-error-msg.hidden {
+      display: none;
+    }
+
+    /* Wrap standard content */
+    #appContent {
+      display: none;
     }
 
     header {
@@ -719,10 +849,6 @@ def save_html(signals_list: list, filename: str) -> None:
     }
 
     @media (min-width: 768px) {
-      body {
-        padding: 32px 24px;
-      }
-
       header {
         flex-direction: row;
         justify-content: space-between;
@@ -750,7 +876,25 @@ def save_html(signals_list: list, filename: str) -> None:
   </style>
 </head>
 <body>
-  <div class="container animate-fade-in">
+  <!-- Password Lock Screen Overlay -->
+  <div id="passwordOverlay" class="password-overlay">
+    <div class="password-card animate-fade-in">
+      <div class="password-icon"><i class="fas fa-lock"></i></div>
+      <h2>V20 Scanner</h2>
+      <p class="password-subtitle">This system is secure. Please enter password to access the scanner.</p>
+      
+      <div class="password-input-wrapper">
+        <input type="password" id="passwordInput" placeholder="Enter Password..." autocomplete="current-password">
+        <button id="unlockBtn" onclick="checkPassword()"><i class="fas fa-arrow-right"></i></button>
+      </div>
+      
+      <div id="passwordError" class="password-error-msg hidden">
+        <i class="fas fa-exclamation-circle"></i> Invalid password. Please try again.
+      </div>
+    </div>
+  </div>
+
+  <div id="appContent" class="container">
     <header>
       <div class="title-area">
         <h1>V20 Scanner by Vishal Yadav</h1>
@@ -857,6 +1001,47 @@ def save_html(signals_list: list, filename: str) -> None:
   <script>
     const signals = __SIGNALS_JSON__;
     
+    // Password protection logic
+    const CORRECT_HASH = "83cf1727de5fd6520f9e9675b2bf095b0376c7e36e690e937d3f3b8486dc2b58"; // Hash of "raosahab"
+
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function checkPassword() {
+      const input = document.getElementById("passwordInput").value;
+      const errorMsg = document.getElementById("passwordError");
+      
+      try {
+        const hash = await sha256(input);
+        if (hash === CORRECT_HASH) {
+          localStorage.setItem("v20_unlocked", "true");
+          document.getElementById("passwordOverlay").style.display = "none";
+          document.getElementById("appContent").style.display = "block";
+          calculateMetrics();
+          render();
+        } else {
+          errorMsg.classList.remove("hidden");
+          document.getElementById("passwordInput").value = "";
+        }
+      } catch (e) {
+        console.error("SHA-256 error, using fallback plain text check", e);
+        if (input === "raosahab") {
+          localStorage.setItem("v20_unlocked", "true");
+          document.getElementById("passwordOverlay").style.display = "none";
+          document.getElementById("appContent").style.display = "block";
+          calculateMetrics();
+          render();
+        } else {
+          errorMsg.classList.remove("hidden");
+          document.getElementById("passwordInput").value = "";
+        }
+      }
+    }
+
     let searchQuery = "";
     let activeFilter = "all";
     let activeSort = "date-desc";
@@ -880,6 +1065,22 @@ def save_html(signals_list: list, filename: str) -> None:
     const avgStrengthEl = document.getElementById("avgStrength");
 
     function init() {
+      // Auto-unlock check
+      if (localStorage.getItem("v20_unlocked") === "true") {
+        document.getElementById("passwordOverlay").style.display = "none";
+        document.getElementById("appContent").style.display = "block";
+      } else {
+        document.getElementById("passwordOverlay").style.display = "flex";
+        document.getElementById("appContent").style.display = "none";
+      }
+
+      // Listen for enter key in password input
+      document.getElementById("passwordInput").addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+          checkPassword();
+        }
+      });
+
       if (window.innerWidth < 768) {
         setView("card");
       } else {
