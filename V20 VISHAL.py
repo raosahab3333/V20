@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-V20 Signal Scanner – Mobile Friendly HTML Dashboard with Password Lock
+V20 Signal Scanner – Mobile Friendly HTML Dashboard with Password Lock & PWA Installer
 """
 
 import yfinance as yf
@@ -122,6 +122,15 @@ def save_html(signals_list: list, filename: str) -> None:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#0b0f19">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  
   <title>V20 Scanner by Vishal Yadav</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1318,6 +1327,15 @@ def save_html(signals_list: list, filename: str) -> None:
     }
 
     window.addEventListener("DOMContentLoaded", init);
+  </script>
+  
+  <!-- Register PWA Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(function(e) {
+        console.error('Service worker registration failed:', e);
+      });
+    }
   </script>
 </body>
 </html>"""
