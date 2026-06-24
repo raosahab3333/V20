@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>V20 Scanner by Vishal Yadav</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #111827 100%);
+      --card-bg: rgba(30, 41, 59, 0.45);
+      --card-border: rgba(255, 255, 255, 0.06);
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --accent-color: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.2);
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.15);
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --header-text: #ffffff;
+      --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      --input-bg: rgba(15, 23, 42, 0.6);
+      --input-border: rgba(255, 255, 255, 0.1);
+      --btn-active-bg: #6366f1;
+      --btn-active-text: #ffffff;
+      --btn-inactive-bg: rgba(255, 255, 255, 0.04);
+      --btn-inactive-border: rgba(255, 255, 255, 0.08);
+      --table-hdr-bg: rgba(15, 23, 42, 0.8);
+      --table-row-even: rgba(255, 255, 255, 0.01);
+      --table-row-hover: rgba(99, 102, 241, 0.06);
+      --badge-strong: rgba(245, 158, 11, 0.15);
+      --badge-strong-text: #fbbf24;
+    }
+
+    [data-theme="light"] {
+      --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      --card-bg: rgba(255, 255, 255, 0.7);
+      --card-border: rgba(0, 0, 0, 0.06);
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --accent-color: #4f46e5;
+      --accent-glow: rgba(79, 70, 229, 0.1);
+      --success: #059669;
+      --success-glow: rgba(5, 150, 105, 0.1);
+      --warning: #d97706;
+      --danger: #dc2626;
+      --header-text: #0f172a;
+      --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.06);
+      --input-bg: rgba(255, 255, 255, 0.9);
+      --input-border: rgba(0, 0, 0, 0.1);
+      --btn-active-bg: #4f46e5;
+      --btn-active-text: #ffffff;
+      --btn-inactive-bg: rgba(0, 0, 0, 0.02);
+      --btn-inactive-border: rgba(0, 0, 0, 0.08);
+      --table-hdr-bg: rgba(241, 245, 249, 0.9);
+      --table-row-even: rgba(0, 0, 0, 0.01);
+      --table-row-hover: rgba(79, 70, 229, 0.04);
+      --badge-strong: rgba(217, 119, 6, 0.1);
+      --badge-strong-text: #b45309;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 24px 16px;
+      transition: background 0.3s ease, color 0.3s ease;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .title-area h1 {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(to right, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 4px;
+    }
+
+    [data-theme="light"] .title-area h1 {
+      background: linear-gradient(to right, #4f46e5, #9333ea);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .theme-toggle-btn {
+      background: var(--btn-inactive-bg);
+      border: 1px solid var(--btn-inactive-border);
+      color: var(--text-primary);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--btn-active-bg);
+      color: var(--btn-active-text);
+      border-color: var(--btn-active-bg);
+      transform: scale(1.05);
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .metric-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--accent-glow);
+      color: var(--accent-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+    }
+
+    .metric-card.success-card .metric-icon {
+      background: var(--success-glow);
+      color: var(--success);
+    }
+
+    .metric-card.warning-card .metric-icon {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+    }
+
+    .metric-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .metric-val {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .metric-lbl {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .controls-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .search-sort-row {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .search-box {
+      position: relative;
+      flex-grow: 1;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      padding: 12px 16px 12px 40px;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .select-dropdown {
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 16px;
+      padding-right: 40px;
+    }
+
+    .filter-pills-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      background: var(--btn-inactive-bg);
+      border: 1px solid var(--btn-inactive-border);
+      color: var(--text-secondary);
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pill:hover {
+      color: var(--text-primary);
+      border-color: var(--text-primary);
+    }
+
+    .pill.active {
+      background: var(--btn-active-bg);
+      border-color: var(--btn-active-bg);
+      color: var(--btn-active-text);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .view-toggles {
+      display: flex;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      padding: 4px;
+    }
+
+    .view-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .view-btn.active {
+      background: var(--card-bg);
+      color: var(--text-primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      border: 1px solid var(--card-border);
+    }
+
+    .view-section {
+      position: relative;
+    }
+
+    .grid-view {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .grid-view.hidden, .table-wrapper.hidden {
+      display: none !important;
+    }
+
+    .signal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .signal-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-color);
+    }
+
+    .card-hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .symbol-badge {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .symbol-badge:hover {
+      color: var(--accent-color);
+    }
+
+    .symbol-badge i {
+      font-size: 12px;
+      opacity: 0.5;
+    }
+
+    .date-badge {
+      font-size: 12px;
+      color: var(--text-secondary);
+      background: rgba(255,255,255,0.04);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .strength-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 50px;
+      background: var(--badge-strong);
+      color: var(--badge-strong-text);
+      align-self: flex-start;
+      margin-top: -6px;
+    }
+
+    .card-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 16px;
+      background: rgba(0, 0, 0, 0.1);
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.02);
+    }
+
+    .stat-box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .stat-value {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .proximity-value {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .proximity-value.near {
+      color: var(--success);
+    }
+
+    .proximity-value.far {
+      color: var(--text-primary);
+    }
+
+    .tv-link-btn {
+      width: 100%;
+      background: var(--btn-inactive-bg);
+      border: 1px solid var(--btn-inactive-border);
+      color: var(--text-primary);
+      text-align: center;
+      padding: 10px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .tv-link-btn:hover {
+      background: var(--accent-color);
+      border-color: var(--accent-color);
+      color: var(--btn-active-text);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .table-wrapper {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow-x: auto;
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: var(--table-hdr-bg);
+      color: var(--text-primary);
+      font-weight: 600;
+      padding: 16px;
+      border-bottom: 1px solid var(--card-border);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+    }
+
+    td {
+      padding: 16px;
+      border-bottom: 1px solid var(--card-border);
+      color: var(--text-primary);
+    }
+
+    tr:nth-child(even) {
+      background: var(--table-row-even);
+    }
+
+    tr:hover {
+      background: var(--table-row-hover);
+    }
+
+    .table-tv-btn {
+      color: var(--text-secondary);
+      background: var(--btn-inactive-bg);
+      border: 1px solid var(--btn-inactive-border);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .table-tv-btn:hover {
+      background: var(--accent-color);
+      border-color: var(--accent-color);
+      color: var(--btn-active-text);
+    }
+
+    .td-symbol {
+      font-weight: 700;
+    }
+
+    .td-proximity.near {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .td-strength.strong {
+      color: var(--warning);
+      font-weight: 600;
+    }
+
+    .no-data-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 60px 20px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .no-data-card i {
+      font-size: 48px;
+      color: var(--text-secondary);
+      opacity: 0.4;
+    }
+
+    .no-data-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .no-data-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      max-width: 400px;
+    }
+
+    @media (min-width: 768px) {
+      body {
+        padding: 32px 24px;
+      }
+
+      header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+      }
+
+      .search-sort-row {
+        flex-direction: row;
+      }
+
+      .controls-panel {
+        padding: 20px;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+  </style>
+</head>
+<body>
+  <div class="container animate-fade-in">
+    <header>
+      <div class="title-area">
+        <h1>V20 Scanner by Vishal Yadav</h1>
+        <div class="subtitle">Automated scanner identifying retracements near major support points. Refreshes daily at 9 AM IST.</div>
+      </div>
+      <div class="header-top">
+        <button id="themeToggle" class="theme-toggle-btn" title="Toggle Light/Dark Theme">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-icon"><i class="fas fa-satellite-dish"></i></div>
+        <div class="metric-info">
+          <div class="metric-val" id="totalSignals">0</div>
+          <div class="metric-lbl">Total Signals</div>
+        </div>
+      </div>
+      <div class="metric-card success-card">
+        <div class="metric-icon"><i class="fas fa-percentage"></i></div>
+        <div class="metric-info">
+          <div class="metric-val" id="avgMove">0%</div>
+          <div class="metric-lbl">Avg % Move</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon"><i class="fas fa-crosshairs"></i></div>
+        <div class="metric-info">
+          <div class="metric-val" id="avgProx">0%</div>
+          <div class="metric-lbl">Avg Proximity</div>
+        </div>
+      </div>
+      <div class="metric-card warning-card">
+        <div class="metric-icon"><i class="fas fa-bolt"></i></div>
+        <div class="metric-info">
+          <div class="metric-val" id="avgStrength">0</div>
+          <div class="metric-lbl">Avg Strength</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls-panel">
+      <div class="search-sort-row">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchInput" class="search-input" placeholder="Search stock symbol (e.g. ABB)...">
+        </div>
+        <select id="sortSelect" class="select-dropdown">
+          <option value="date-desc">Date (Newest First)</option>
+          <option value="prox-asc">Proximity (Closest to Buy Point)</option>
+          <option value="strength-desc">Signal Strength (Highest First)</option>
+          <option value="symbol-asc">Symbol (A to Z)</option>
+        </select>
+      </div>
+      <div class="filter-pills-row">
+        <div class="filter-pills">
+          <div class="pill active" data-filter="all">All Signals</div>
+          <div class="pill" data-filter="near-buy">Near Buy Point (&le; 5%)</div>
+          <div class="pill" data-filter="strong">Strong Signals (&ge; 50)</div>
+        </div>
+        <div class="view-toggles">
+          <button class="view-btn" id="cardViewBtn"><i class="fas fa-grip-2"></i>Cards</button>
+          <button class="view-btn" id="tableViewBtn"><i class="fas fa-list"></i>Table</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="view-section">
+      <div id="gridContainer" class="grid-view"></div>
+
+      <div id="tableContainer" class="table-wrapper hidden">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Symbol</th>
+              <th>Close</th>
+              <th>Buy At (Streak Low)</th>
+              <th>Sell At (Streak High)</th>
+              <th>% Move</th>
+              <th>Proximity</th>
+              <th>Strength Score</th>
+              <th>Chart</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+
+      <div id="emptyState" class="no-data-card hidden">
+        <i class="fas fa-search"></i>
+        <h3 id="emptyTitle">No Signals Found</h3>
+        <p id="emptyText">No stock signals matched your current search filters or scan thresholds.</p>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 40px; font-size: 12px; color: var(--text-secondary);">
+      Scan completed on <span id="scanTimestamp">Jun 24, 2026, 10:56 AM</span>. For educational purposes only.
+    </div>
+  </div>
+
+  <script>
+    const signals = [{"SignalDate": "2026-06-23", "Symbol": "KIRLOSBROS", "BuyAt": 1682.4, "SellAt": 2189.2, "PercentMove": 30.12, "Close": 2013.8, "Proximity": 19.7, "SignalStrength": 5.93}, {"SignalDate": "2026-06-22", "Symbol": "GARFIBRES", "BuyAt": 681.05, "SellAt": 818.65, "PercentMove": 20.2, "Close": 747.75, "Proximity": 9.79, "SignalStrength": 1.98}, {"SignalDate": "2026-06-16", "Symbol": "AIIL", "BuyAt": 467.7, "SellAt": 581.6, "PercentMove": 24.35, "Close": 539.65, "Proximity": 15.38, "SignalStrength": 3.75}, {"SignalDate": "2026-06-16", "Symbol": "AIIL", "BuyAt": 467.7, "SellAt": 581.6, "PercentMove": 24.35, "Close": 539.65, "Proximity": 15.38, "SignalStrength": 3.75}, {"SignalDate": "2026-06-16", "Symbol": "TBOTEK", "BuyAt": 1193.0, "SellAt": 1497.9, "PercentMove": 25.56, "Close": 1445.4, "Proximity": 21.16, "SignalStrength": 5.41}, {"SignalDate": "2026-06-03", "Symbol": "NEWGEN", "BuyAt": 435.0, "SellAt": 529.8, "PercentMove": 21.79, "Close": 470.5, "Proximity": 8.16, "SignalStrength": 1.78}, {"SignalDate": "2026-05-27", "Symbol": "BLUEJET", "BuyAt": 425.55, "SellAt": 521.55, "PercentMove": 22.56, "Close": 515.95, "Proximity": 21.24, "SignalStrength": 4.79}, {"SignalDate": "2026-05-25", "Symbol": "HONAUT", "BuyAt": 28540.0, "SellAt": 36550.0, "PercentMove": 28.07, "Close": 39330.0, "Proximity": 37.81, "SignalStrength": 10.61}, {"SignalDate": "2026-05-22", "Symbol": "IGIL", "BuyAt": 314.0, "SellAt": 378.5, "PercentMove": 20.54, "Close": 344.55, "Proximity": 9.73, "SignalStrength": 2.0}, {"SignalDate": "2026-05-01", "Symbol": "OFSS", "BuyAt": 7618.73, "SellAt": 9551.37, "PercentMove": 25.37, "Close": 10195.0, "Proximity": 33.81, "SignalStrength": 8.58}, {"SignalDate": "2026-04-28", "Symbol": "MANINFRA", "BuyAt": 94.93, "SellAt": 116.49, "PercentMove": 22.71, "Close": 104.45, "Proximity": 10.03, "SignalStrength": 2.28}, {"SignalDate": "2026-04-28", "Symbol": "TARIL", "BuyAt": 295.0, "SellAt": 358.0, "PercentMove": 21.36, "Close": 340.05, "Proximity": 15.27, "SignalStrength": 3.26}, {"SignalDate": "2026-04-27", "Symbol": "ELECON", "BuyAt": 404.25, "SellAt": 522.96, "PercentMove": 29.37, "Close": 534.0, "Proximity": 32.1, "SignalStrength": 9.43}, {"SignalDate": "2026-04-24", "Symbol": "JYOTHYLAB", "BuyAt": 219.41, "SellAt": 264.1, "PercentMove": 20.37, "Close": 201.0, "Proximity": -8.39, "SignalStrength": 1.71}, {"SignalDate": "2026-04-24", "Symbol": "JSFB", "BuyAt": 383.35, "SellAt": 483.1, "PercentMove": 26.02, "Close": 459.0, "Proximity": 19.73, "SignalStrength": 5.13}, {"SignalDate": "2026-04-21", "Symbol": "BLUESTARCO", "BuyAt": 1581.5, "SellAt": 1921.0, "PercentMove": 21.47, "Close": 1657.0, "Proximity": 4.77, "SignalStrength": 1.02}, {"SignalDate": "2026-04-21", "Symbol": "RADICO", "BuyAt": 2710.0, "SellAt": 3365.0, "PercentMove": 24.17, "Close": 3725.3, "Proximity": 37.46, "SignalStrength": 9.06}, {"SignalDate": "2026-04-21", "Symbol": "TRITURBINE", "BuyAt": 475.8, "SellAt": 605.95, "PercentMove": 27.35, "Close": 688.5, "Proximity": 44.7, "SignalStrength": 12.23}, {"SignalDate": "2026-04-21", "Symbol": "POLYCAB", "BuyAt": 6658.9, "SellAt": 8245.87, "PercentMove": 23.83, "Close": 9812.0, "Proximity": 47.35, "SignalStrength": 11.28}, {"SignalDate": "2026-04-20", "Symbol": "WAAREERTL", "BuyAt": 886.8, "SellAt": 1202.0, "PercentMove": 35.54, "Close": 979.2, "Proximity": 10.42, "SignalStrength": 3.7}, {"SignalDate": "2026-04-20", "Symbol": "NESCO", "BuyAt": 996.0, "SellAt": 1217.0, "PercentMove": 22.19, "Close": 1108.1, "Proximity": 11.26, "SignalStrength": 2.5}, {"SignalDate": "2026-04-20", "Symbol": "RITES", "BuyAt": 180.05, "SellAt": 226.35, "PercentMove": 25.72, "Close": 206.45, "Proximity": 14.66, "SignalStrength": 3.77}, {"SignalDate": "2026-04-20", "Symbol": "TARIL", "BuyAt": 272.0, "SellAt": 327.7, "PercentMove": 20.48, "Close": 340.05, "Proximity": 25.02, "SignalStrength": 5.12}, {"SignalDate": "2026-04-20", "Symbol": "HAL", "BuyAt": 3545.0, "SellAt": 4399.4, "PercentMove": 24.1, "Close": 4457.1, "Proximity": 25.73, "SignalStrength": 6.2}, {"SignalDate": "2026-04-20", "Symbol": "VBL", "BuyAt": 394.43, "SellAt": 474.75, "PercentMove": 20.36, "Close": 505.75, "Proximity": 28.22, "SignalStrength": 5.75}, {"SignalDate": "2026-04-20", "Symbol": "SUZLON", "BuyAt": 43.89, "SellAt": 53.74, "PercentMove": 22.44, "Close": 57.9, "Proximity": 31.92, "SignalStrength": 7.16}, {"SignalDate": "2026-04-20", "Symbol": "FIVESTAR", "BuyAt": 354.55, "SellAt": 474.0, "PercentMove": 33.69, "Close": 490.35, "Proximity": 38.3, "SignalStrength": 12.9}, {"SignalDate": "2026-04-20", "Symbol": "HONAUT", "BuyAt": 27300.0, "SellAt": 32900.0, "PercentMove": 20.51, "Close": 39330.0, "Proximity": 44.07, "SignalStrength": 9.04}, {"SignalDate": "2026-04-17", "Symbol": "GRAVITA", "BuyAt": 1294.9, "SellAt": 1673.4, "PercentMove": 29.23, "Close": 1722.9, "Proximity": 33.05, "SignalStrength": 9.66}, {"SignalDate": "2026-04-17", "Symbol": "WELCORP", "BuyAt": 805.45, "SellAt": 1080.4, "PercentMove": 34.14, "Close": 1413.1, "Proximity": 75.44, "SignalStrength": 25.75}, {"SignalDate": "2026-04-16", "Symbol": "RAILTEL", "BuyAt": 275.57, "SellAt": 339.85, "PercentMove": 23.33, "Close": 316.5, "Proximity": 14.85, "SignalStrength": 3.46}, {"SignalDate": "2026-04-16", "Symbol": "SHAREINDIA", "BuyAt": 119.1, "SellAt": 148.4, "PercentMove": 24.6, "Close": 137.14, "Proximity": 15.15, "SignalStrength": 3.73}, {"SignalDate": "2026-04-16", "Symbol": "KAJARIACER", "BuyAt": 945.5, "SellAt": 1178.0, "PercentMove": 24.59, "Close": 1193.8, "Proximity": 26.26, "SignalStrength": 6.46}, {"SignalDate": "2026-04-15", "Symbol": "KSCL", "BuyAt": 768.0, "SellAt": 946.8, "PercentMove": 23.28, "Close": 915.3, "Proximity": 19.18, "SignalStrength": 4.47}, {"SignalDate": "2026-04-15", "Symbol": "POLYMED", "BuyAt": 1205.0, "SellAt": 1478.0, "PercentMove": 22.66, "Close": 1627.2, "Proximity": 35.04, "SignalStrength": 7.94}, {"SignalDate": "2026-04-15", "Symbol": "KIRLOSBROS", "BuyAt": 1473.5, "SellAt": 1869.8, "PercentMove": 26.9, "Close": 2013.8, "Proximity": 36.67, "SignalStrength": 9.86}, {"SignalDate": "2026-04-13", "Symbol": "BOSCHLTD", "BuyAt": 29120.0, "SellAt": 37670.0, "PercentMove": 29.36, "Close": 40280.0, "Proximity": 38.32, "SignalStrength": 11.25}, {"SignalDate": "2026-04-10", "Symbol": "ANGELONE", "BuyAt": 228.45, "SellAt": 284.2, "PercentMove": 24.4, "Close": 341.35, "Proximity": 49.42, "SignalStrength": 12.06}, {"SignalDate": "2026-04-09", "Symbol": "BLS", "BuyAt": 243.0, "SellAt": 305.75, "PercentMove": 25.82, "Close": 258.05, "Proximity": 6.19, "SignalStrength": 1.6}, {"SignalDate": "2026-04-09", "Symbol": "BALUFORGE", "BuyAt": 399.2, "SellAt": 482.65, "PercentMove": 20.9, "Close": 471.5, "Proximity": 18.11, "SignalStrength": 3.79}, {"SignalDate": "2026-04-07", "Symbol": "DMART", "BuyAt": 3685.1, "SellAt": 4562.6, "PercentMove": 23.81, "Close": 4344.8, "Proximity": 17.9, "SignalStrength": 4.26}, {"SignalDate": "2026-04-07", "Symbol": "EIHOTEL", "BuyAt": 271.15, "SellAt": 333.4, "PercentMove": 22.96, "Close": 328.65, "Proximity": 21.21, "SignalStrength": 4.87}, {"SignalDate": "2026-03-27", "Symbol": "BLS", "BuyAt": 226.05, "SellAt": 276.8, "PercentMove": 22.45, "Close": 258.05, "Proximity": 14.16, "SignalStrength": 3.18}, {"SignalDate": "2026-03-20", "Symbol": "WAAREEENER", "BuyAt": 2541.0, "SellAt": 3223.8, "PercentMove": 26.87, "Close": 3041.2, "Proximity": 19.69, "SignalStrength": 5.29}, {"SignalDate": "2026-03-09", "Symbol": "JWL", "BuyAt": 246.2, "SellAt": 305.0, "PercentMove": 23.88, "Close": 267.05, "Proximity": 8.47, "SignalStrength": 2.02}, {"SignalDate": "2026-03-09", "Symbol": "EIHOTEL", "BuyAt": 300.5, "SellAt": 374.55, "PercentMove": 24.64, "Close": 328.65, "Proximity": 9.37, "SignalStrength": 2.31}, {"SignalDate": "2026-03-04", "Symbol": "J&KBANK", "BuyAt": 102.5, "SellAt": 123.6, "PercentMove": 20.59, "Close": 158.77, "Proximity": 54.9, "SignalStrength": 11.3}, {"SignalDate": "2026-02-27", "Symbol": "CONCORDBIO", "BuyAt": 1072.7, "SellAt": 1291.3, "PercentMove": 20.38, "Close": 1301.4, "Proximity": 21.32, "SignalStrength": 4.34}, {"SignalDate": "2026-02-24", "Symbol": "RATNAMANI", "BuyAt": 2122.9, "SellAt": 2582.0, "PercentMove": 21.63, "Close": 2745.9, "Proximity": 29.35, "SignalStrength": 6.35}, {"SignalDate": "2026-02-23", "Symbol": "TARIL", "BuyAt": 261.18, "SellAt": 328.68, "PercentMove": 25.84, "Close": 340.05, "Proximity": 30.2, "SignalStrength": 7.8}, {"SignalDate": "2026-02-20", "Symbol": "NEWGEN", "BuyAt": 458.65, "SellAt": 637.5, "PercentMove": 38.99, "Close": 470.5, "Proximity": 2.58, "SignalStrength": 1.01}, {"SignalDate": "2026-02-19", "Symbol": "GODFRYPHLP", "BuyAt": 2016.0, "SellAt": 2478.9, "PercentMove": 22.96, "Close": 2233.8, "Proximity": 10.8, "SignalStrength": 2.48}, {"SignalDate": "2026-02-17", "Symbol": "ENGINERSIN", "BuyAt": 195.71, "SellAt": 234.92, "PercentMove": 20.04, "Close": 255.14, "Proximity": 30.37, "SignalStrength": 6.08}, {"SignalDate": "2026-02-12", "Symbol": "POONAWALLA", "BuyAt": 402.75, "SellAt": 503.0, "PercentMove": 24.89, "Close": 421.65, "Proximity": 4.69, "SignalStrength": 1.17}, {"SignalDate": "2026-02-12", "Symbol": "BALUFORGE", "BuyAt": 428.95, "SellAt": 516.0, "PercentMove": 20.29, "Close": 471.5, "Proximity": 9.92, "SignalStrength": 2.01}, {"SignalDate": "2026-02-10", "Symbol": "KEI", "BuyAt": 3826.1, "SellAt": 4610.0, "PercentMove": 20.49, "Close": 5464.0, "Proximity": 42.81, "SignalStrength": 8.77}, {"SignalDate": "2026-02-09", "Symbol": "CONCORDBIO", "BuyAt": 1144.1, "SellAt": 1385.0, "PercentMove": 21.06, "Close": 1301.4, "Proximity": 13.75, "SignalStrength": 2.89}, {"SignalDate": "2026-02-06", "Symbol": "BLS", "BuyAt": 253.23, "SellAt": 306.8, "PercentMove": 21.15, "Close": 258.05, "Proximity": 1.9, "SignalStrength": 0.4}, {"SignalDate": "2026-02-05", "Symbol": "SHARDAMOTR", "BuyAt": 825.8, "SellAt": 1016.7, "PercentMove": 23.12, "Close": 831.95, "Proximity": 0.74, "SignalStrength": 0.17}, {"SignalDate": "2026-02-05", "Symbol": "WAAREEENER", "BuyAt": 2629.1, "SellAt": 3195.0, "PercentMove": 21.52, "Close": 3041.2, "Proximity": 15.67, "SignalStrength": 3.37}, {"SignalDate": "2026-02-05", "Symbol": "ELECON", "BuyAt": 367.95, "SellAt": 457.6, "PercentMove": 24.36, "Close": 534.0, "Proximity": 45.13, "SignalStrength": 10.99}, {"SignalDate": "2026-02-05", "Symbol": "LLOYDSME", "BuyAt": 1042.28, "SellAt": 1327.21, "PercentMove": 27.34, "Close": 1757.3, "Proximity": 68.6, "SignalStrength": 18.75}, {"SignalDate": "2026-02-04", "Symbol": "GARFIBRES", "BuyAt": 603.9, "SellAt": 762.45, "PercentMove": 26.25, "Close": 747.75, "Proximity": 23.82, "SignalStrength": 6.25}, {"SignalDate": "2026-02-04", "Symbol": "APARINDS", "BuyAt": 6957.5, "SellAt": 9795.0, "PercentMove": 40.78, "Close": 16665.0, "Proximity": 139.53, "SignalStrength": 56.9}, {"SignalDate": "2026-02-02", "Symbol": "BALUFORGE", "BuyAt": 341.05, "SellAt": 429.4, "PercentMove": 25.91, "Close": 471.5, "Proximity": 38.25, "SignalStrength": 9.91}, {"SignalDate": "2026-02-02", "Symbol": "ABB", "BuyAt": 4630.56, "SellAt": 5582.67, "PercentMove": 20.56, "Close": 7039.5, "Proximity": 52.02, "SignalStrength": 10.7}, {"SignalDate": "2026-01-29", "Symbol": "DATAPATTNS", "BuyAt": 2131.0, "SellAt": 2650.0, "PercentMove": 24.35, "Close": 4755.0, "Proximity": 123.13, "SignalStrength": 29.99}, {"SignalDate": "2026-01-27", "Symbol": "SUNTV", "BuyAt": 477.21, "SellAt": 573.01, "PercentMove": 20.07, "Close": 513.85, "Proximity": 7.68, "SignalStrength": 1.54}, {"SignalDate": "2026-01-05", "Symbol": "TARIL", "BuyAt": 282.5, "SellAt": 343.7, "PercentMove": 21.66, "Close": 340.05, "Proximity": 20.37, "SignalStrength": 4.41}, {"SignalDate": "2025-12-29", "Symbol": "JWL", "BuyAt": 253.05, "SellAt": 358.25, "PercentMove": 41.57, "Close": 267.05, "Proximity": 5.53, "SignalStrength": 2.3}, {"SignalDate": "2025-12-17", "Symbol": "SHAREINDIA", "BuyAt": 154.31, "SellAt": 189.47, "PercentMove": 22.79, "Close": 137.14, "Proximity": -11.13, "SignalStrength": 2.54}, {"SignalDate": "2025-12-17", "Symbol": "SHAKTIPUMP", "BuyAt": 550.0, "SellAt": 796.2, "PercentMove": 44.76, "Close": 588.3, "Proximity": 6.96, "SignalStrength": 3.12}, {"SignalDate": "2025-12-16", "Symbol": "TARIL", "BuyAt": 241.7, "SellAt": 314.0, "PercentMove": 29.91, "Close": 340.05, "Proximity": 40.69, "SignalStrength": 12.17}, {"SignalDate": "2025-12-11", "Symbol": "DOLATALGO", "BuyAt": 69.66, "SellAt": 92.83, "PercentMove": 33.26, "Close": 74.88, "Proximity": 7.49, "SignalStrength": 2.49}, {"SignalDate": "2025-11-21", "Symbol": "GRWRHITECH", "BuyAt": 3405.1, "SellAt": 4275.0, "PercentMove": 25.55, "Close": 6709.5, "Proximity": 97.04, "SignalStrength": 24.79}, {"SignalDate": "2025-11-04", "Symbol": "FIVESTAR", "BuyAt": 527.25, "SellAt": 666.0, "PercentMove": 26.32, "Close": 490.35, "Proximity": -7.0, "SignalStrength": 1.84}, {"SignalDate": "2025-10-23", "Symbol": "SHAREINDIA", "BuyAt": 135.63, "SellAt": 209.96, "PercentMove": 54.81, "Close": 137.14, "Proximity": 1.12, "SignalStrength": 0.61}, {"SignalDate": "2025-10-20", "Symbol": "BLS", "BuyAt": 276.71, "SellAt": 339.36, "PercentMove": 22.64, "Close": 258.05, "Proximity": -6.74, "SignalStrength": 1.53}, {"SignalDate": "2025-08-14", "Symbol": "EIHOTEL", "BuyAt": 352.5, "SellAt": 426.0, "PercentMove": 20.85, "Close": 328.65, "Proximity": -6.77, "SignalStrength": 1.41}, {"SignalDate": "2025-07-08", "Symbol": "SHARDAMOTR", "BuyAt": 1026.4, "SellAt": 1248.0, "PercentMove": 21.59, "Close": 831.95, "Proximity": -18.94, "SignalStrength": 4.09}, {"SignalDate": "2025-06-12", "Symbol": "FIVESTAR", "BuyAt": 674.01, "SellAt": 825.14, "PercentMove": 22.42, "Close": 490.35, "Proximity": -27.25, "SignalStrength": 6.11}, {"SignalDate": "2025-06-11", "Symbol": "MUTHOOTFIN", "BuyAt": 2050.66, "SellAt": 2551.33, "PercentMove": 24.41, "Close": 3100.1, "Proximity": 51.18, "SignalStrength": 12.49}, {"SignalDate": "2025-06-09", "Symbol": "IMFA", "BuyAt": 608.66, "SellAt": 741.28, "PercentMove": 21.79, "Close": 1378.4, "Proximity": 126.46, "SignalStrength": 27.55}, {"SignalDate": "2025-06-06", "Symbol": "PFIZER", "BuyAt": 4280.78, "SellAt": 5692.32, "PercentMove": 32.97, "Close": 4516.0, "Proximity": 5.49, "SignalStrength": 1.81}, {"SignalDate": "2025-06-03", "Symbol": "WELCORP", "BuyAt": 753.93, "SellAt": 941.72, "PercentMove": 24.91, "Close": 1413.1, "Proximity": 87.43, "SignalStrength": 21.78}, {"SignalDate": "2025-06-02", "Symbol": "CLEAN", "BuyAt": 1259.56, "SellAt": 1590.61, "PercentMove": 26.28, "Close": 789.5, "Proximity": -37.32, "SignalStrength": 9.81}, {"SignalDate": "2025-05-27", "Symbol": "EMCURE", "BuyAt": 1044.84, "SellAt": 1409.88, "PercentMove": 34.94, "Close": 1819.5, "Proximity": 74.14, "SignalStrength": 25.9}, {"SignalDate": "2025-05-21", "Symbol": "NEWGEN", "BuyAt": 1130.46, "SellAt": 1370.44, "PercentMove": 21.23, "Close": 470.5, "Proximity": -58.38, "SignalStrength": 12.39}, {"SignalDate": "2025-05-20", "Symbol": "SKFINDIA", "BuyAt": 3808.96, "SellAt": 4674.45, "PercentMove": 22.72, "Close": 1659.7, "Proximity": -56.43, "SignalStrength": 12.82}, {"SignalDate": "2025-05-20", "Symbol": "RITES", "BuyAt": 205.44, "SellAt": 294.01, "PercentMove": 43.11, "Close": 206.45, "Proximity": 0.49, "SignalStrength": 0.21}, {"SignalDate": "2025-05-20", "Symbol": "VESUVIUS", "BuyAt": 461.95, "SellAt": 558.37, "PercentMove": 20.87, "Close": 468.5, "Proximity": 1.42, "SignalStrength": 0.3}, {"SignalDate": "2025-05-20", "Symbol": "UTIAMC", "BuyAt": 930.78, "SellAt": 1136.53, "PercentMove": 22.11, "Close": 944.25, "Proximity": 1.45, "SignalStrength": 0.32}, {"SignalDate": "2025-05-20", "Symbol": "RAILTEL", "BuyAt": 288.29, "SellAt": 398.93, "PercentMove": 38.38, "Close": 316.5, "Proximity": 9.78, "SignalStrength": 3.75}, {"SignalDate": "2025-05-20", "Symbol": "TVSHLTD", "BuyAt": 9417.69, "SellAt": 11579.03, "PercentMove": 22.95, "Close": 13393.0, "Proximity": 42.21, "SignalStrength": 9.69}, {"SignalDate": "2025-05-20", "Symbol": "ANGELONE", "BuyAt": 219.79, "SellAt": 276.96, "PercentMove": 26.01, "Close": 341.35, "Proximity": 55.31, "SignalStrength": 14.39}, {"SignalDate": "2025-05-19", "Symbol": "JWL", "BuyAt": 326.39, "SellAt": 427.54, "PercentMove": 30.99, "Close": 267.05, "Proximity": -18.18, "SignalStrength": 5.63}, {"SignalDate": "2025-05-19", "Symbol": "DHANUKA", "BuyAt": 1213.63, "SellAt": 1637.56, "PercentMove": 34.93, "Close": 1065.2, "Proximity": -12.23, "SignalStrength": 4.27}, {"SignalDate": "2025-05-19", "Symbol": "COCHINSHIP", "BuyAt": 1525.81, "SellAt": 2055.61, "PercentMove": 34.72, "Close": 1477.7, "Proximity": -3.15, "SignalStrength": 1.09}, {"SignalDate": "2025-05-19", "Symbol": "ECLERX", "BuyAt": 1176.36, "SellAt": 1661.58, "PercentMove": 41.25, "Close": 1398.7, "Proximity": 18.9, "SignalStrength": 7.8}, {"SignalDate": "2025-05-19", "Symbol": "TI", "BuyAt": 269.42, "SellAt": 363.86, "PercentMove": 35.06, "Close": 434.15, "Proximity": 61.14, "SignalStrength": 21.43}, {"SignalDate": "2025-05-19", "Symbol": "INOXINDIA", "BuyAt": 952.79, "SellAt": 1170.68, "PercentMove": 22.87, "Close": 1989.0, "Proximity": 108.75, "SignalStrength": 24.87}, {"SignalDate": "2025-05-19", "Symbol": "APARINDS", "BuyAt": 6269.38, "SellAt": 8349.57, "PercentMove": 33.18, "Close": 16665.0, "Proximity": 165.82, "SignalStrength": 55.02}, {"SignalDate": "2025-05-16", "Symbol": "SUZLON", "BuyAt": 51.1, "SellAt": 61.77, "PercentMove": 20.88, "Close": 57.9, "Proximity": 13.31, "SignalStrength": 2.78}, {"SignalDate": "2025-05-16", "Symbol": "FINEORG", "BuyAt": 3854.21, "SellAt": 4636.51, "PercentMove": 20.3, "Close": 5250.9, "Proximity": 36.24, "SignalStrength": 7.36}, {"SignalDate": "2025-05-16", "Symbol": "AIIL", "BuyAt": 330.24, "SellAt": 431.1, "PercentMove": 30.54, "Close": 539.65, "Proximity": 63.41, "SignalStrength": 19.37}, {"SignalDate": "2025-05-16", "Symbol": "AIIL", "BuyAt": 330.24, "SellAt": 431.1, "PercentMove": 30.54, "Close": 539.65, "Proximity": 63.41, "SignalStrength": 19.37}, {"SignalDate": "2025-05-16", "Symbol": "HBLENGINE", "BuyAt": 450.31, "SellAt": 580.32, "PercentMove": 28.87, "Close": 824.1, "Proximity": 83.01, "SignalStrength": 23.97}, {"SignalDate": "2025-05-16", "Symbol": "GRWRHITECH", "BuyAt": 2845.01, "SellAt": 3809.82, "PercentMove": 33.91, "Close": 6709.5, "Proximity": 135.83, "SignalStrength": 46.06}, {"SignalDate": "2025-05-15", "Symbol": "BALUFORGE", "BuyAt": 504.89, "SellAt": 623.86, "PercentMove": 23.56, "Close": 471.5, "Proximity": -6.61, "SignalStrength": 1.56}, {"SignalDate": "2025-05-15", "Symbol": "DOLATALGO", "BuyAt": 75.81, "SellAt": 91.73, "PercentMove": 21.0, "Close": 74.88, "Proximity": -1.23, "SignalStrength": 0.26}, {"SignalDate": "2025-05-15", "Symbol": "SURYAROSNI", "BuyAt": 242.37, "SellAt": 297.33, "PercentMove": 22.67, "Close": 262.81, "Proximity": 8.43, "SignalStrength": 1.91}, {"SignalDate": "2025-05-15", "Symbol": "TANLA", "BuyAt": 451.32, "SellAt": 563.05, "PercentMove": 24.76, "Close": 521.55, "Proximity": 15.56, "SignalStrength": 3.85}, {"SignalDate": "2025-05-15", "Symbol": "GPIL", "BuyAt": 169.27, "SellAt": 205.29, "PercentMove": 21.28, "Close": 265.6, "Proximity": 56.91, "SignalStrength": 12.11}, {"SignalDate": "2025-05-15", "Symbol": "SHRIPISTON", "BuyAt": 1779.4, "SellAt": 2464.86, "PercentMove": 38.52, "Close": 3851.1, "Proximity": 116.43, "SignalStrength": 44.85}, {"SignalDate": "2025-05-14", "Symbol": "ELECON", "BuyAt": 539.3, "SellAt": 673.64, "PercentMove": 24.91, "Close": 534.0, "Proximity": -0.98, "SignalStrength": 0.24}, {"SignalDate": "2025-05-13", "Symbol": "CERA", "BuyAt": 5159.26, "SellAt": 6705.99, "PercentMove": 29.98, "Close": 6347.5, "Proximity": 23.03, "SignalStrength": 6.9}, {"SignalDate": "2025-04-30", "Symbol": "GRSE", "BuyAt": 1611.08, "SellAt": 2005.81, "PercentMove": 24.5, "Close": 2783.0, "Proximity": 72.74, "SignalStrength": 17.82}, {"SignalDate": "2025-04-30", "Symbol": "DATAPATTNS", "BuyAt": 2044.86, "SellAt": 2639.08, "PercentMove": 29.06, "Close": 4755.0, "Proximity": 132.53, "SignalStrength": 38.51}, {"SignalDate": "2025-04-25", "Symbol": "NEWGEN", "BuyAt": 947.36, "SellAt": 1177.63, "PercentMove": 24.31, "Close": 470.5, "Proximity": -50.34, "SignalStrength": 12.23}, {"SignalDate": "2025-04-25", "Symbol": "TATAELXSI", "BuyAt": 4667.55, "SellAt": 5770.08, "PercentMove": 23.62, "Close": 4062.0, "Proximity": -12.97, "SignalStrength": 3.06}, {"SignalDate": "2025-04-25", "Symbol": "ELECON", "BuyAt": 459.18, "SellAt": 552.22, "PercentMove": 20.26, "Close": 534.0, "Proximity": 16.29, "SignalStrength": 3.3}, {"SignalDate": "2025-04-24", "Symbol": "TI", "BuyAt": 230.89, "SellAt": 306.34, "PercentMove": 32.68, "Close": 434.15, "Proximity": 88.03, "SignalStrength": 28.77}, {"SignalDate": "2025-04-24", "Symbol": "DATAPATTNS", "BuyAt": 1636.79, "SellAt": 2183.45, "PercentMove": 33.4, "Close": 4755.0, "Proximity": 190.51, "SignalStrength": 63.63}, {"SignalDate": "2025-04-23", "Symbol": "POLYMED", "BuyAt": 1931.11, "SellAt": 2482.14, "PercentMove": 28.53, "Close": 1627.2, "Proximity": -15.74, "SignalStrength": 4.49}, {"SignalDate": "2025-04-23", "Symbol": "HAVELLS", "BuyAt": 1373.11, "SellAt": 1654.06, "PercentMove": 20.46, "Close": 1181.1, "Proximity": -13.98, "SignalStrength": 2.86}, {"SignalDate": "2025-04-23", "Symbol": "KFINTECH", "BuyAt": 1003.58, "SellAt": 1286.39, "PercentMove": 28.18, "Close": 879.65, "Proximity": -12.35, "SignalStrength": 3.48}, {"SignalDate": "2025-04-23", "Symbol": "DOMS", "BuyAt": 2513.45, "SellAt": 3060.88, "PercentMove": 21.78, "Close": 2300.9, "Proximity": -8.46, "SignalStrength": 1.84}, {"SignalDate": "2025-04-23", "Symbol": "DIXON", "BuyAt": 12749.33, "SellAt": 16820.51, "PercentMove": 31.93, "Close": 12018.0, "Proximity": -5.74, "SignalStrength": 1.83}, {"SignalDate": "2025-04-23", "Symbol": "AIIL", "BuyAt": 314.62, "SellAt": 385.31, "PercentMove": 22.47, "Close": 539.65, "Proximity": 71.53, "SignalStrength": 16.07}, {"SignalDate": "2025-04-23", "Symbol": "AIIL", "BuyAt": 314.62, "SellAt": 385.31, "PercentMove": 22.47, "Close": 539.65, "Proximity": 71.53, "SignalStrength": 16.07}, {"SignalDate": "2025-04-23", "Symbol": "J&KBANK", "BuyAt": 91.45, "SellAt": 114.04, "PercentMove": 24.71, "Close": 158.77, "Proximity": 73.62, "SignalStrength": 18.19}, {"SignalDate": "2025-04-22", "Symbol": "MCX", "BuyAt": 903.55, "SellAt": 1187.07, "PercentMove": 31.38, "Close": 2853.2, "Proximity": 215.78, "SignalStrength": 67.71}, {"SignalDate": "2025-04-21", "Symbol": "GRAVITA", "BuyAt": 1632.59, "SellAt": 2018.25, "PercentMove": 23.62, "Close": 1722.9, "Proximity": 5.53, "SignalStrength": 1.31}, {"SignalDate": "2025-04-21", "Symbol": "GARFIBRES", "BuyAt": 665.77, "SellAt": 884.95, "PercentMove": 32.92, "Close": 747.75, "Proximity": 12.31, "SignalStrength": 4.05}, {"SignalDate": "2025-04-21", "Symbol": "SPLPETRO", "BuyAt": 531.36, "SellAt": 642.04, "PercentMove": 20.83, "Close": 748.2, "Proximity": 40.81, "SignalStrength": 8.5}, {"SignalDate": "2025-04-16", "Symbol": "QUESS", "BuyAt": 256.73, "SellAt": 582.7, "PercentMove": 126.97, "Close": 248.9, "Proximity": -3.05, "SignalStrength": 3.87}, {"SignalDate": "2025-04-15", "Symbol": "PIIND", "BuyAt": 3038.54, "SellAt": 3683.89, "PercentMove": 21.24, "Close": 2752.3, "Proximity": -9.42, "SignalStrength": 2.0}, {"SignalDate": "2025-04-15", "Symbol": "DODLA", "BuyAt": 983.6, "SellAt": 1197.94, "PercentMove": 21.79, "Close": 1107.7, "Proximity": 12.62, "SignalStrength": 2.75}, {"SignalDate": "2025-04-15", "Symbol": "ERIS", "BuyAt": 1091.34, "SellAt": 1389.64, "PercentMove": 27.33, "Close": 1456.8, "Proximity": 33.49, "SignalStrength": 9.15}, {"SignalDate": "2025-04-15", "Symbol": "UJJIVANSFB", "BuyAt": 32.88, "SellAt": 39.95, "PercentMove": 21.5, "Close": 55.93, "Proximity": 70.1, "SignalStrength": 15.07}, {"SignalDate": "2025-04-11", "Symbol": "JYOTHYLAB", "BuyAt": 297.02, "SellAt": 385.36, "PercentMove": 29.74, "Close": 201.0, "Proximity": -32.33, "SignalStrength": 9.61}, {"SignalDate": "2025-04-11", "Symbol": "KFINTECH", "BuyAt": 823.29, "SellAt": 1061.79, "PercentMove": 28.97, "Close": 879.65, "Proximity": 6.85, "SignalStrength": 1.98}, {"SignalDate": "2025-04-11", "Symbol": "AVANTIFEED", "BuyAt": 593.45, "SellAt": 759.04, "PercentMove": 27.9, "Close": 984.8, "Proximity": 65.95, "SignalStrength": 18.4}, {"SignalDate": "2025-04-09", "Symbol": "NEWGEN", "BuyAt": 754.5, "SellAt": 919.25, "PercentMove": 21.83, "Close": 470.5, "Proximity": -37.64, "SignalStrength": 8.22}, {"SignalDate": "2025-04-09", "Symbol": "FIVESTAR", "BuyAt": 592.94, "SellAt": 730.32, "PercentMove": 23.17, "Close": 490.35, "Proximity": -17.3, "SignalStrength": 4.01}, {"SignalDate": "2025-04-09", "Symbol": "AAVAS", "BuyAt": 1674.2, "SellAt": 2093.95, "PercentMove": 25.07, "Close": 1481.0, "Proximity": -11.54, "SignalStrength": 2.89}, {"SignalDate": "2025-04-09", "Symbol": "CHOLAHLDNG", "BuyAt": 1356.42, "SellAt": 1745.45, "PercentMove": 28.68, "Close": 1584.2, "Proximity": 16.79, "SignalStrength": 4.82}, {"SignalDate": "2025-04-09", "Symbol": "MEDANTA", "BuyAt": 1009.64, "SellAt": 1259.55, "PercentMove": 24.75, "Close": 1314.5, "Proximity": 30.2, "SignalStrength": 7.47}, {"SignalDate": "2025-04-09", "Symbol": "ALIVUS", "BuyAt": 845.5, "SellAt": 1019.48, "PercentMove": 20.58, "Close": 1120.4, "Proximity": 32.51, "SignalStrength": 6.69}, {"SignalDate": "2025-04-09", "Symbol": "MARKSANS", "BuyAt": 170.4, "SellAt": 209.96, "PercentMove": 23.22, "Close": 267.75, "Proximity": 57.13, "SignalStrength": 13.26}, {"SignalDate": "2025-04-08", "Symbol": "ZENSARTECH", "BuyAt": 527.04, "SellAt": 656.04, "PercentMove": 24.48, "Close": 449.5, "Proximity": -14.71, "SignalStrength": 3.6}, {"SignalDate": "2025-04-08", "Symbol": "JWL", "BuyAt": 310.23, "SellAt": 374.08, "PercentMove": 20.58, "Close": 267.05, "Proximity": -13.92, "SignalStrength": 2.86}, {"SignalDate": "2025-04-08", "Symbol": "SIEMENS", "BuyAt": 2450.0, "SellAt": 3087.0, "PercentMove": 26.0, "Close": 3603.2, "Proximity": 47.07, "SignalStrength": 12.24}, {"SignalDate": "2025-04-08", "Symbol": "WELCORP", "BuyAt": 660.74, "SellAt": 797.7, "PercentMove": 20.73, "Close": 1413.1, "Proximity": 113.87, "SignalStrength": 23.6}, {"SignalDate": "2025-03-25", "Symbol": "BLS", "BuyAt": 347.25, "SellAt": 420.67, "PercentMove": 21.14, "Close": 258.05, "Proximity": -25.69, "SignalStrength": 5.43}, {"SignalDate": "2025-03-25", "Symbol": "BALUFORGE", "BuyAt": 501.14, "SellAt": 673.55, "PercentMove": 34.4, "Close": 471.5, "Proximity": -5.91, "SignalStrength": 2.03}, {"SignalDate": "2025-03-25", "Symbol": "KFINTECH", "BuyAt": 934.34, "SellAt": 1162.62, "PercentMove": 24.43, "Close": 879.65, "Proximity": -5.85, "SignalStrength": 1.43}, {"SignalDate": "2025-03-25", "Symbol": "SHARDAMOTR", "BuyAt": 730.13, "SellAt": 884.78, "PercentMove": 21.18, "Close": 831.95, "Proximity": 13.94, "SignalStrength": 2.95}, {"SignalDate": "2025-03-25", "Symbol": "ZENTEC", "BuyAt": 1233.26, "SellAt": 1556.46, "PercentMove": 26.21, "Close": 1881.8, "Proximity": 52.59, "SignalStrength": 13.78}, {"SignalDate": "2025-03-21", "Symbol": "DOLATALGO", "BuyAt": 68.52, "SellAt": 90.41, "PercentMove": 31.95, "Close": 74.88, "Proximity": 9.28, "SignalStrength": 2.97}, {"SignalDate": "2025-03-21", "Symbol": "GRSE", "BuyAt": 1294.01, "SellAt": 1770.47, "PercentMove": 36.82, "Close": 2783.0, "Proximity": 115.07, "SignalStrength": 42.37}, {"SignalDate": "2025-03-20", "Symbol": "TANLA", "BuyAt": 410.09, "SellAt": 511.54, "PercentMove": 24.74, "Close": 521.55, "Proximity": 27.18, "SignalStrength": 6.72}, {"SignalDate": "2025-03-12", "Symbol": "VESUVIUS", "BuyAt": 371.96, "SellAt": 450.79, "PercentMove": 21.19, "Close": 468.5, "Proximity": 25.95, "SignalStrength": 5.5}, {"SignalDate": "2025-03-12", "Symbol": "ASTRAZEN", "BuyAt": 6597.55, "SellAt": 7962.78, "PercentMove": 20.69, "Close": 8460.5, "Proximity": 28.24, "SignalStrength": 5.84}, {"SignalDate": "2025-03-12", "Symbol": "LLOYDSME", "BuyAt": 957.91, "SellAt": 1175.12, "PercentMove": 22.68, "Close": 1757.3, "Proximity": 83.45, "SignalStrength": 18.92}, {"SignalDate": "2025-03-10", "Symbol": "TARIL", "BuyAt": 356.5, "SellAt": 431.62, "PercentMove": 21.07, "Close": 340.05, "Proximity": -4.61, "SignalStrength": 0.97}, {"SignalDate": "2025-03-10", "Symbol": "ALIVUS", "BuyAt": 863.51, "SellAt": 1088.16, "PercentMove": 26.02, "Close": 1120.4, "Proximity": 29.75, "SignalStrength": 7.74}, {"SignalDate": "2025-03-10", "Symbol": "KIRLOSBROS", "BuyAt": 1417.47, "SellAt": 1714.1, "PercentMove": 20.93, "Close": 2013.8, "Proximity": 42.07, "SignalStrength": 8.8}, {"SignalDate": "2025-03-10", "Symbol": "TRITURBINE", "BuyAt": 463.37, "SellAt": 633.69, "PercentMove": 36.76, "Close": 688.5, "Proximity": 48.59, "SignalStrength": 17.86}, {"SignalDate": "2025-03-10", "Symbol": "GRINDWELL", "BuyAt": 1342.7, "SellAt": 1639.34, "PercentMove": 22.09, "Close": 2146.3, "Proximity": 59.85, "SignalStrength": 13.22}, {"SignalDate": "2025-03-10", "Symbol": "ZENTEC", "BuyAt": 1027.7, "SellAt": 1297.37, "PercentMove": 26.24, "Close": 1881.8, "Proximity": 83.11, "SignalStrength": 21.81}, {"SignalDate": "2025-03-07", "Symbol": "CAPLIPOINT", "BuyAt": 1598.46, "SellAt": 1949.8, "PercentMove": 21.98, "Close": 2526.8, "Proximity": 58.08, "SignalStrength": 12.77}, {"SignalDate": "2025-03-07", "Symbol": "GPIL", "BuyAt": 148.56, "SellAt": 188.76, "PercentMove": 27.06, "Close": 265.6, "Proximity": 78.78, "SignalStrength": 21.32}, {"SignalDate": "2025-02-25", "Symbol": "KFINTECH", "BuyAt": 778.93, "SellAt": 936.13, "PercentMove": 20.18, "Close": 879.65, "Proximity": 12.93, "SignalStrength": 2.61}, {"SignalDate": "2025-02-21", "Symbol": "GILLETTE", "BuyAt": 7265.28, "SellAt": 8796.35, "PercentMove": 21.07, "Close": 7808.0, "Proximity": 7.47, "SignalStrength": 1.57}, {"SignalDate": "2025-02-21", "Symbol": "GLAXO", "BuyAt": 1894.45, "SellAt": 2642.36, "PercentMove": 39.48, "Close": 2366.9, "Proximity": 24.94, "SignalStrength": 9.85}, {"SignalDate": "2025-02-21", "Symbol": "ZENTEC", "BuyAt": 944.02, "SellAt": 1146.83, "PercentMove": 21.48, "Close": 1881.8, "Proximity": 99.34, "SignalStrength": 21.34}, {"SignalDate": "2025-02-21", "Symbol": "RADICO", "BuyAt": 1842.83, "SellAt": 2216.19, "PercentMove": 20.26, "Close": 3725.3, "Proximity": 102.15, "SignalStrength": 20.7}, {"SignalDate": "2025-02-19", "Symbol": "CONCORDBIO", "BuyAt": 1473.21, "SellAt": 1829.33, "PercentMove": 24.17, "Close": 1301.4, "Proximity": -11.66, "SignalStrength": 2.82}, {"SignalDate": "2025-02-18", "Symbol": "INGERRAND", "BuyAt": 3022.97, "SellAt": 3668.66, "PercentMove": 21.36, "Close": 4583.7, "Proximity": 51.63, "SignalStrength": 11.03}, {"SignalDate": "2025-02-14", "Symbol": "GRWRHITECH", "BuyAt": 3230.01, "SellAt": 4115.55, "PercentMove": 27.42, "Close": 6709.5, "Proximity": 107.72, "SignalStrength": 29.53}, {"SignalDate": "2025-02-11", "Symbol": "GODFRYPHLP", "BuyAt": 1528.06, "SellAt": 1875.49, "PercentMove": 22.74, "Close": 2233.8, "Proximity": 46.19, "SignalStrength": 10.5}, {"SignalDate": "2025-02-10", "Symbol": "GLAXO", "BuyAt": 1886.75, "SellAt": 2275.65, "PercentMove": 20.61, "Close": 2366.9, "Proximity": 25.45, "SignalStrength": 5.25}, {"SignalDate": "2025-02-10", "Symbol": "ERIS", "BuyAt": 1149.27, "SellAt": 1483.47, "PercentMove": 29.08, "Close": 1456.8, "Proximity": 26.76, "SignalStrength": 7.78}, {"SignalDate": "2025-02-07", "Symbol": "APTUS", "BuyAt": 261.65, "SellAt": 321.07, "PercentMove": 22.71, "Close": 265.95, "Proximity": 1.64, "SignalStrength": 0.37}, {"SignalDate": "2025-02-07", "Symbol": "DOMS", "BuyAt": 2089.76, "SellAt": 2830.56, "PercentMove": 35.45, "Close": 2300.9, "Proximity": 10.1, "SignalStrength": 3.58}, {"SignalDate": "2025-02-04", "Symbol": "DODLA", "BuyAt": 978.26, "SellAt": 1188.31, "PercentMove": 21.47, "Close": 1107.7, "Proximity": 13.23, "SignalStrength": 2.84}, {"SignalDate": "2025-02-04", "Symbol": "AJANTPHARM", "BuyAt": 2537.64, "SellAt": 3045.74, "PercentMove": 20.02, "Close": 3209.0, "Proximity": 26.46, "SignalStrength": 5.3}, {"SignalDate": "2025-02-03", "Symbol": "KSB", "BuyAt": 612.1, "SellAt": 740.56, "PercentMove": 20.99, "Close": 945.9, "Proximity": 54.53, "SignalStrength": 11.44}, {"SignalDate": "2025-02-01", "Symbol": "FIVESTAR", "BuyAt": 630.81, "SellAt": 795.24, "PercentMove": 26.07, "Close": 490.35, "Proximity": -22.27, "SignalStrength": 5.8}, {"SignalDate": "2025-02-01", "Symbol": "VOLTAMP", "BuyAt": 6956.33, "SellAt": 8450.51, "PercentMove": 21.48, "Close": 10508.5, "Proximity": 51.06, "SignalStrength": 10.97}, {"SignalDate": "2025-02-01", "Symbol": "GABRIEL", "BuyAt": 395.58, "SellAt": 486.95, "PercentMove": 23.1, "Close": 1212.0, "Proximity": 206.38, "SignalStrength": 47.67}, {"SignalDate": "2025-01-31", "Symbol": "KPITTECH", "BuyAt": 1212.35, "SellAt": 1465.83, "PercentMove": 20.91, "Close": 742.25, "Proximity": -38.78, "SignalStrength": 8.11}, {"SignalDate": "2025-01-27", "Symbol": "JSFB", "BuyAt": 376.1, "SellAt": 459.95, "PercentMove": 22.29, "Close": 459.0, "Proximity": 22.04, "SignalStrength": 4.91}, {"SignalDate": "2025-01-15", "Symbol": "SURYAROSNI", "BuyAt": 225.99, "SellAt": 274.81, "PercentMove": 21.6, "Close": 262.81, "Proximity": 16.29, "SignalStrength": 3.52}, {"SignalDate": "2025-01-06", "Symbol": "DMART", "BuyAt": 3446.2, "SellAt": 4165.9, "PercentMove": 20.88, "Close": 4344.8, "Proximity": 26.08, "SignalStrength": 5.45}, {"SignalDate": "2025-01-03", "Symbol": "TANLA", "BuyAt": 632.29, "SellAt": 760.76, "PercentMove": 20.32, "Close": 521.55, "Proximity": -17.51, "SignalStrength": 3.56}, {"SignalDate": "2025-01-01", "Symbol": "ASTRAZEN", "BuyAt": 6291.25, "SellAt": 7568.13, "PercentMove": 20.3, "Close": 8460.5, "Proximity": 34.48, "SignalStrength": 7.0}, {"SignalDate": "2024-12-24", "Symbol": "FIVESTAR", "BuyAt": 640.38, "SellAt": 786.18, "PercentMove": 22.77, "Close": 490.35, "Proximity": -23.43, "SignalStrength": 5.33}, {"SignalDate": "2024-12-12", "Symbol": "GPIL", "BuyAt": 184.54, "SellAt": 236.44, "PercentMove": 28.12, "Close": 265.6, "Proximity": 43.92, "SignalStrength": 12.35}, {"SignalDate": "2024-12-09", "Symbol": "KEI", "BuyAt": 3767.94, "SellAt": 4522.33, "PercentMove": 20.02, "Close": 5464.0, "Proximity": 45.01, "SignalStrength": 9.01}, {"SignalDate": "2024-11-29", "Symbol": "COCHINSHIP", "BuyAt": 1254.11, "SellAt": 1565.65, "PercentMove": 24.84, "Close": 1477.7, "Proximity": 17.83, "SignalStrength": 4.43}, {"SignalDate": "2024-11-29", "Symbol": "GRSE", "BuyAt": 1396.88, "SellAt": 1713.77, "PercentMove": 22.69, "Close": 2783.0, "Proximity": 99.23, "SignalStrength": 22.51}, {"SignalDate": "2024-11-05", "Symbol": "POONAWALLA", "BuyAt": 270.05, "SellAt": 383.7, "PercentMove": 42.08, "Close": 421.65, "Proximity": 56.14, "SignalStrength": 23.63}, {"SignalDate": "2024-11-04", "Symbol": "GPIL", "BuyAt": 160.66, "SellAt": 200.02, "PercentMove": 24.5, "Close": 265.6, "Proximity": 65.32, "SignalStrength": 16.0}, {"SignalDate": "2024-11-01", "Symbol": "ACE", "BuyAt": 1113.13, "SellAt": 1372.02, "PercentMove": 23.26, "Close": 997.9, "Proximity": -10.35, "SignalStrength": 2.41}, {"SignalDate": "2024-11-01", "Symbol": "INDIANB", "BuyAt": 473.79, "SellAt": 569.97, "PercentMove": 20.3, "Close": 848.5, "Proximity": 79.09, "SignalStrength": 16.06}, {"SignalDate": "2024-10-17", "Symbol": "ANGELONE", "BuyAt": 246.58, "SellAt": 327.97, "PercentMove": 33.01, "Close": 341.35, "Proximity": 38.43, "SignalStrength": 12.69}, {"SignalDate": "2024-10-15", "Symbol": "GANESHHOU", "BuyAt": 774.0, "SellAt": 1005.15, "PercentMove": 29.87, "Close": 751.95, "Proximity": -2.85, "SignalStrength": 0.85}, {"SignalDate": "2024-10-10", "Symbol": "MSTCLTD", "BuyAt": 553.33, "SellAt": 677.67, "PercentMove": 22.47, "Close": 666.5, "Proximity": 20.45, "SignalStrength": 4.6}, {"SignalDate": "2024-08-28", "Symbol": "TATAELXSI", "BuyAt": 6722.05, "SellAt": 8820.26, "PercentMove": 31.21, "Close": 4062.0, "Proximity": -39.57, "SignalStrength": 12.35}, {"SignalDate": "2024-08-22", "Symbol": "ANGELONE", "BuyAt": 203.95, "SellAt": 275.97, "PercentMove": 35.31, "Close": 341.35, "Proximity": 67.37, "SignalStrength": 23.79}, {"SignalDate": "2024-08-16", "Symbol": "SURYAROSNI", "BuyAt": 267.35, "SellAt": 331.93, "PercentMove": 24.16, "Close": 262.81, "Proximity": -1.7, "SignalStrength": 0.41}, {"SignalDate": "2024-07-30", "Symbol": "TEAMLEASE", "BuyAt": 2854.65, "SellAt": 3478.0, "PercentMove": 21.84, "Close": 1443.0, "Proximity": -49.45, "SignalStrength": 10.8}, {"SignalDate": "2024-06-19", "Symbol": "PNBHOUSING", "BuyAt": 653.92, "SellAt": 898.67, "PercentMove": 37.43, "Close": 1020.9, "Proximity": 56.12, "SignalStrength": 21.01}, {"SignalDate": "2024-06-14", "Symbol": "SANOFI", "BuyAt": 5620.1, "SellAt": 10037.9, "PercentMove": 78.61, "Close": 3420.7, "Proximity": -39.13, "SignalStrength": 30.76}, {"SignalDate": "2024-06-14", "Symbol": "BAYERCROP", "BuyAt": 4853.87, "SellAt": 5898.46, "PercentMove": 21.52, "Close": 4181.8, "Proximity": -13.85, "SignalStrength": 2.98}, {"SignalDate": "2024-06-14", "Symbol": "BLS", "BuyAt": 282.57, "SellAt": 349.28, "PercentMove": 23.61, "Close": 258.05, "Proximity": -8.68, "SignalStrength": 2.05}, {"SignalDate": "2024-06-13", "Symbol": "AAVAS", "BuyAt": 1491.9, "SellAt": 1934.0, "PercentMove": 29.63, "Close": 1481.0, "Proximity": -0.73, "SignalStrength": 0.22}, {"SignalDate": "2024-06-13", "Symbol": "GRAVITA", "BuyAt": 951.22, "SellAt": 1345.5, "PercentMove": 41.45, "Close": 1722.9, "Proximity": 81.13, "SignalStrength": 33.63}, {"SignalDate": "2024-06-12", "Symbol": "DODLA", "BuyAt": 822.79, "SellAt": 1057.25, "PercentMove": 28.5, "Close": 1107.7, "Proximity": 34.63, "SignalStrength": 9.87}, {"SignalDate": "2024-06-12", "Symbol": "TI", "BuyAt": 214.04, "SellAt": 284.42, "PercentMove": 32.88, "Close": 434.15, "Proximity": 102.84, "SignalStrength": 33.82}, {"SignalDate": "2024-06-11", "Symbol": "GARFIBRES", "BuyAt": 631.73, "SellAt": 841.7, "PercentMove": 33.24, "Close": 747.75, "Proximity": 18.37, "SignalStrength": 6.1}, {"SignalDate": "2024-06-06", "Symbol": "JYOTHYLAB", "BuyAt": 360.38, "SellAt": 446.89, "PercentMove": 24.0, "Close": 201.0, "Proximity": -44.23, "SignalStrength": 10.62}, {"SignalDate": "2024-06-06", "Symbol": "SUNTV", "BuyAt": 605.06, "SellAt": 727.88, "PercentMove": 20.3, "Close": 513.85, "Proximity": -15.07, "SignalStrength": 3.06}, {"SignalDate": "2024-05-29", "Symbol": "ZFCVINDIA", "BuyAt": 2194.54, "SellAt": 2907.74, "PercentMove": 32.5, "Close": 2691.0, "Proximity": 22.62, "SignalStrength": 7.35}, {"SignalDate": "2024-05-28", "Symbol": "COFORGE", "BuyAt": 842.27, "SellAt": 1044.52, "PercentMove": 24.01, "Close": 1491.1, "Proximity": 77.03, "SignalStrength": 18.5}, {"SignalDate": "2024-05-28", "Symbol": "GRAVITA", "BuyAt": 930.34, "SellAt": 1146.17, "PercentMove": 23.2, "Close": 1722.9, "Proximity": 85.19, "SignalStrength": 19.76}, {"SignalDate": "2024-05-02", "Symbol": "SUPREMEIND", "BuyAt": 4043.18, "SellAt": 5052.64, "PercentMove": 24.97, "Close": 3539.1, "Proximity": -12.47, "SignalStrength": 3.11}];
+    
+    let searchQuery = "";
+    let activeFilter = "all";
+    let activeSort = "date-desc";
+    let activeView = "card";
+
+    const searchInput = document.getElementById("searchInput");
+    const sortSelect = document.getElementById("sortSelect");
+    const pills = document.querySelectorAll(".pill");
+    const cardViewBtn = document.getElementById("cardViewBtn");
+    const tableViewBtn = document.getElementById("tableViewBtn");
+    const gridContainer = document.getElementById("gridContainer");
+    const tableContainer = document.getElementById("tableContainer");
+    const tableBody = document.getElementById("tableBody");
+    const emptyState = document.getElementById("emptyState");
+    const themeToggle = document.getElementById("themeToggle");
+    const root = document.documentElement;
+
+    const totalSignalsEl = document.getElementById("totalSignals");
+    const avgMoveEl = document.getElementById("avgMove");
+    const avgProxEl = document.getElementById("avgProx");
+    const avgStrengthEl = document.getElementById("avgStrength");
+
+    function init() {
+      if (window.innerWidth < 768) {
+        setView("card");
+      } else {
+        setView("table");
+      }
+
+      const savedTheme = localStorage.getItem("theme") || "dark";
+      setTheme(savedTheme);
+
+      themeToggle.addEventListener("click", () => {
+        const currentTheme = root.getAttribute("data-theme");
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+        setTheme(newTheme);
+      });
+
+      searchInput.addEventListener("input", (e) => {
+        searchQuery = e.target.value.toLowerCase().trim();
+        render();
+      });
+
+      sortSelect.addEventListener("change", (e) => {
+        activeSort = e.target.value;
+        render();
+      });
+
+      pills.forEach(pill => {
+        pill.addEventListener("click", () => {
+          pills.forEach(p => p.classList.remove("active"));
+          pill.classList.add("active");
+          activeFilter = pill.getAttribute("data-filter");
+          render();
+        });
+      });
+
+      cardViewBtn.addEventListener("click", () => setView("card"));
+      tableViewBtn.addEventListener("click", () => setView("table"));
+
+      calculateMetrics();
+      render();
+    }
+
+    function setTheme(theme) {
+      root.setAttribute("data-theme", theme);
+      localStorage.setItem("theme", theme);
+      const icon = themeToggle.querySelector("i");
+      if (theme === "dark") {
+        icon.className = "fas fa-sun";
+      } else {
+        icon.className = "fas fa-moon";
+      }
+    }
+
+    function setView(view) {
+      activeView = view;
+      if (view === "card") {
+        cardViewBtn.classList.add("active");
+        tableViewBtn.classList.remove("active");
+      } else {
+        tableViewBtn.classList.add("active");
+        cardViewBtn.classList.remove("active");
+      }
+      render();
+    }
+
+    function calculateMetrics() {
+      if (!signals || signals.length === 0) return;
+
+      totalSignalsEl.textContent = signals.length;
+      
+      const sumMove = signals.reduce((acc, sig) => acc + sig['PercentMove'], 0);
+      avgMoveEl.textContent = (sumMove / signals.length).toFixed(1) + "%";
+
+      const sumProx = signals.reduce((acc, sig) => acc + sig['Proximity'], 0);
+      avgProxEl.textContent = (sumProx / signals.length).toFixed(1) + "%";
+
+      const sumStrength = signals.reduce((acc, sig) => acc + sig['SignalStrength'], 0);
+      avgStrengthEl.textContent = (sumStrength / signals.length).toFixed(1);
+    }
+
+    function getFilteredAndSorted() {
+      let items = signals.filter(sig => {
+        const matchSearch = sig.Symbol.toLowerCase().includes(searchQuery);
+        if (!matchSearch) return false;
+
+        if (activeFilter === "near-buy") {
+          return sig.Proximity <= 5.0;
+        } else if (activeFilter === "strong") {
+          return sig.SignalStrength >= 50.0;
+        }
+        return true;
+      });
+
+      items.sort((a, b) => {
+        if (activeSort === "date-desc") {
+          return b.SignalDate.localeCompare(a.SignalDate) || a.Proximity - b.Proximity;
+        } else if (activeSort === "prox-asc") {
+          return a.Proximity - b.Proximity;
+        } else if (activeSort === "strength-desc") {
+          return b.SignalStrength - a.SignalStrength;
+        } else if (activeSort === "symbol-asc") {
+          return a.Symbol.localeCompare(b.Symbol);
+        }
+        return 0;
+      });
+
+      return items;
+    }
+
+    function render() {
+      const items = getFilteredAndSorted();
+
+      if (items.length === 0) {
+        gridContainer.classList.add("hidden");
+        tableContainer.classList.add("hidden");
+        emptyState.classList.remove("hidden");
+        if (signals.length === 0) {
+          document.getElementById("emptyTitle").textContent = "No Signals Today";
+          document.getElementById("emptyText").textContent = "The market did not trigger any V20 strategy signals in today's scan.";
+        } else {
+          document.getElementById("emptyTitle").textContent = "No Matching Signals";
+          document.getElementById("emptyText").textContent = "Try modifying your search query or filter pills to see other results.";
+        }
+        return;
+      }
+
+      emptyState.classList.add("hidden");
+
+      if (activeView === "card") {
+        gridContainer.classList.remove("hidden");
+        tableContainer.classList.add("hidden");
+        renderCards(items);
+      } else {
+        gridContainer.classList.add("hidden");
+        tableContainer.classList.remove("hidden");
+        renderTable(items);
+      }
+    }
+
+    function renderCards(items) {
+      gridContainer.innerHTML = items.map(sig => {
+        const proxClass = sig.Proximity <= 5.0 ? 'near' : 'far';
+        const isStrong = sig.SignalStrength >= 50.0;
+        
+        return `
+          <div class="signal-card animate-fade-in">
+            <div class="card-hdr">
+              <a href="https://in.tradingview.com/chart/?symbol=NSE:${sig.Symbol}" target="_blank" class="symbol-badge">
+                ${sig.Symbol} <i class="fas fa-external-link-alt"></i>
+              </a>
+              <span class="date-badge">${sig.SignalDate}</span>
+            </div>
+            
+            ${isStrong ? `
+              <div class="strength-indicator">
+                <i class="fas fa-star"></i> Strong Signal
+              </div>
+            ` : ''}
+
+            <div class="card-stats">
+              <div class="stat-box">
+                <span class="stat-label">Close Price</span>
+                <span class="stat-value">&#8377;${sig.Close.toLocaleString('en-IN')}</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-label">Proximity</span>
+                <span class="stat-value proximity-value ${proxClass}">
+                  ${sig.Proximity.toFixed(2)}%
+                </span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-label">Buy Point (Low)</span>
+                <span class="stat-value">&#8377;${sig.BuyAt.toLocaleString('en-IN')}</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-label">Sell Point (High)</span>
+                <span class="stat-value">&#8377;${sig.SellAt.toLocaleString('en-IN')}</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-label">% Move</span>
+                <span class="stat-value">${sig.PercentMove.toFixed(2)}%</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-label">Strength Score</span>
+                <span class="stat-value">${sig.SignalStrength.toFixed(1)}</span>
+              </div>
+            </div>
+
+            <a href="https://in.tradingview.com/chart/?symbol=NSE:${sig.Symbol}" target="_blank" class="tv-link-btn">
+              <i class="fas fa-chart-line"></i> View TV Chart
+            </a>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderTable(items) {
+      tableBody.innerHTML = items.map(sig => {
+        const proxClass = sig.Proximity <= 5.0 ? 'td-proximity near' : 'td-proximity';
+        const strengthClass = sig.SignalStrength >= 50.0 ? 'td-strength strong' : 'td-strength';
+        
+        return `
+          <tr class="animate-fade-in">
+            <td>${sig.SignalDate}</td>
+            <td class="td-symbol">${sig.Symbol}</td>
+            <td>&#8377;${sig.Close.toLocaleString('en-IN')}</td>
+            <td>&#8377;${sig.BuyAt.toLocaleString('en-IN')}</td>
+            <td>&#8377;${sig.SellAt.toLocaleString('en-IN')}</td>
+            <td>${sig.PercentMove.toFixed(2)}%</td>
+            <td class="${proxClass}">${sig.Proximity.toFixed(2)}%</td>
+            <td class="${strengthClass}">${sig.SignalStrength.toFixed(1)}</td>
+            <td>
+              <a href="https://in.tradingview.com/chart/?symbol=NSE:${sig.Symbol}" target="_blank" class="table-tv-btn" title="Open TradingView Chart">
+                <i class="fas fa-chart-line"></i>
+              </a>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    window.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>
