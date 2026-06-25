@@ -57,13 +57,52 @@ all_stocks = [
     "SUNDARMFIN","IREDA","FIVESTAR","AADHARHFC","CANFINHOME","APTUS","CRISIL","AAVAS","REPCOHOME"
 ]
 
+def adjust_for_splits(df: pd.DataFrame) -> pd.DataFrame:
+    if 'Stock Splits' not in df.columns or df.empty:
+        return df
+    
+    split_idx = df[df['Stock Splits'] > 0].index
+    if split_idx.empty:
+        return df
+        
+    df = df.copy()
+    for split_date in split_idx:
+        split_ratio = df.loc[split_date, 'Stock Splits']
+        if pd.isna(split_ratio) or split_ratio == 1.0 or split_ratio <= 0:
+            continue
+            
+        try:
+            pos = df.index.get_loc(split_date)
+            if not isinstance(pos, int):
+                # Handle cases where get_loc returns a slice or array due to duplicates
+                pos = pos[0] if hasattr(pos, '__len__') else pos
+            if pos == 0:
+                continue
+                
+            p_prev = df['Close'].iloc[pos - 1]
+            p_curr = df['Close'].iloc[pos]
+            
+            if p_curr == 0:
+                continue
+                
+            actual_ratio = p_prev / p_curr
+            if abs(actual_ratio - split_ratio) / split_ratio < 0.15:
+                logging.info(f"Auto-adjusting unadjusted split on {split_date.date()} (ratio: {split_ratio})")
+                historical_dates = df.index[:pos]
+                df.loc[historical_dates, ['Open', 'High', 'Low', 'Close']] /= split_ratio
+        except Exception as e:
+            logging.error(f"Error adjusting split on {split_date}: {str(e)}")
+            
+    return df
+
 def download_data(symbol: str) -> pd.DataFrame | None:
     try:
-        df = yf.Ticker(symbol + ".NS").history(start=START_DATE, end=END_DATE)
+        df = yf.Ticker(symbol + ".NS").history(start=START_DATE, end=END_DATE, auto_adjust=True)
         if df.empty:
             logging.warning(f"No data retrieved for {symbol}.NS")
             return None
-        df = df[['Open', 'High', 'Low', 'Close']].dropna()
+        df = df[['Open', 'High', 'Low', 'Close', 'Stock Splits']].dropna(subset=['Open', 'High', 'Low', 'Close'])
+        df = adjust_for_splits(df)
         df['MA200'] = df['Close'].rolling(window=200).mean()
         return df
     except Exception as e:
