@@ -95,6 +95,41 @@ def adjust_for_splits(df: pd.DataFrame) -> pd.DataFrame:
             
     return df
 
+def adjust_for_discontinuities(df: pd.DataFrame) -> pd.DataFrame:
+    if df.empty or len(df) < 2:
+        return df
+    
+    df = df.copy()
+    idx = 1
+    while idx < len(df):
+        p_prev = df['Close'].iloc[idx - 1]
+        p_curr_open = df['Open'].iloc[idx]
+        
+        if p_curr_open == 0 or pd.isna(p_curr_open) or pd.isna(p_prev):
+            idx += 1
+            continue
+            
+        ratio = p_prev / p_curr_open
+        # If there is a massive overnight gap down (>= 20% drop, i.e., ratio >= 1.25)
+        if ratio >= 1.25:
+            # Check persistence to avoid bad prints (the drop must last at least 2 days)
+            p_next1 = df['Close'].iloc[idx + 1] if idx + 1 < len(df) else df['Close'].iloc[idx]
+            p_next2 = df['Close'].iloc[idx + 2] if idx + 2 < len(df) else p_next1
+            
+            if not pd.isna(p_next1) and not pd.isna(p_next2):
+                ratio_next1 = p_prev / p_next1
+                ratio_next2 = p_prev / p_next2
+                
+                # The price must remain at least 15% lower than the previous close
+                if ratio_next1 >= 1.15 and ratio_next2 >= 1.15:
+                    logging.info(f"Auto-adjusting discontinuity on {df.index[idx].date()} (ratio: {ratio:.4f})")
+                    historical_dates = df.index[:idx]
+                    df.loc[historical_dates, ['Open', 'High', 'Low', 'Close']] /= ratio
+            
+        idx += 1
+        
+    return df
+
 def download_data(symbol: str) -> pd.DataFrame | None:
     try:
         df = yf.Ticker(symbol + ".NS").history(start=START_DATE, end=END_DATE, auto_adjust=True)
@@ -103,6 +138,7 @@ def download_data(symbol: str) -> pd.DataFrame | None:
             return None
         df = df[['Open', 'High', 'Low', 'Close', 'Stock Splits']].dropna(subset=['Open', 'High', 'Low', 'Close'])
         df = adjust_for_splits(df)
+        df = adjust_for_discontinuities(df)
         df['MA200'] = df['Close'].rolling(window=200).mean()
         return df
     except Exception as e:
